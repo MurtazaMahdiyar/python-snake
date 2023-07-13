@@ -12,7 +12,6 @@ offsets = {
     'left': (-20, 0),
     'right': (20, 0)
 }
-score = 0
 
 
 def go_up():
@@ -43,6 +42,18 @@ def go_right():
         snake_direction = 'right'
 
 
+def reset():
+    global score, snake, snake_direction, food_pos
+
+    score = 0
+    snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
+    snake_direction = 'up'
+    food_pos = get_random_food_pos()
+    food.goto(food_pos)
+
+    game_loop()
+
+
 def game_loop():
     stamper.clearstamps()
 
@@ -53,7 +64,7 @@ def game_loop():
     # Check collisions
     if new_head in snake or new_head[0] < - WIDTH / 2 or new_head[0] > WIDTH / 2 \
             or new_head[1] < - HEIGHT / 2 or new_head[1] > HEIGHT / 2:
-        turtle.bye()
+        reset()
     else:
         # add new-head to snake body
         snake.append(new_head)
@@ -120,23 +131,16 @@ stamper.shape("square")
 stamper.penup()
 
 # create snake list-representation
-snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
-snake_direction = 'up'
-
-for segment in snake:
-    stamper.goto(segment[0], segment[1])
-    stamper.stamp()
 
 food = turtle.Turtle()
 food.shape('circle')
 food.shapesize(FOOD_SIZE / 20)
 food.color('red')
 food.penup()
-food_pos = get_random_food_pos()
-food.goto(food_pos)
+
 
 # set animation in motion
-game_loop()
+reset()
 
 # Finish -
 turtle.done()
