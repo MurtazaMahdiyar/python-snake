@@ -1,10 +1,10 @@
 import turtle
 import random
 
-WIDTH = 500
-HEIGHT = 500
-DELAY = 70  # milli-seconds
-FOOD_SIZE = 10
+WIDTH = 800
+HEIGHT = 600
+DELAY = 200  # milli-seconds
+FOOD_SIZE = 30
 
 offsets = {
     'up': (0, 20),
@@ -14,39 +14,35 @@ offsets = {
 }
 
 
-def go_up():
+def bind_direction_keys():
+    screen.onkey(lambda: set_snake_direction('up'), 'Up')
+    screen.onkey(lambda: set_snake_direction('down'), 'Down')
+    screen.onkey(lambda: set_snake_direction('left'), 'Left')
+    screen.onkey(lambda: set_snake_direction('right'), 'Right')
+
+
+def set_snake_direction(direction):
     global snake_direction
 
-    if snake_direction != 'down':
-        snake_direction = 'up'
-
-
-def go_down():
-    global snake_direction
-
-    if snake_direction != 'up':
-        snake_direction = 'down'
-
-
-def go_left():
-    global snake_direction
-
-    if snake_direction != 'right':
-        snake_direction = 'left'
-
-
-def go_right():
-    global snake_direction
-
-    if snake_direction != 'left':
-        snake_direction = 'right'
+    if direction == 'up':
+        if snake_direction != 'down':
+            snake_direction = 'up'
+    elif direction == 'down':
+        if snake_direction != 'up':
+            snake_direction = 'down'
+    elif direction == 'left':
+        if snake_direction != 'right':
+            snake_direction = 'left'
+    elif direction == 'right':
+        if snake_direction != 'left':
+            snake_direction = 'right'
 
 
 def reset():
     global score, snake, snake_direction, food_pos
 
     score = 0
-    snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
+    snake = [[0, 0], [20, 0]]
     snake_direction = 'up'
     food_pos = get_random_food_pos()
     food.goto(food_pos)
@@ -85,9 +81,13 @@ def game_loop():
 
 
 def food_collision():
-    global food_pos, score
+    global food_pos, score, DELAY
     if get_distance(snake[-1], food_pos) < 20:
         score += 1  # add score after fed
+        # speed-up on score
+        if DELAY > 90:
+            DELAY -= 5
+
         food_pos = get_random_food_pos()
         food.goto(food_pos)
         return True
@@ -114,26 +114,23 @@ def get_distance(pos1, pos2):
 screen = turtle.Screen()
 screen.setup(WIDTH, HEIGHT)
 screen.title("Python Snake")
-screen.bgcolor("pink")
+screen.bgcolor("yellow")
 screen.tracer(0)  # disable-auto-animations
 
 # Event Handlers
 screen.listen()
-screen.onkey(go_up, 'Up')
-screen.onkey(go_down, 'Down')
-screen.onkey(go_left, 'Left')
-screen.onkey(go_right, 'Right')
-
+bind_direction_keys()
 
 # set-stamper (snake-indicator)
 stamper = turtle.Turtle()
-stamper.shape("square")
+stamper.shape("circle")
+stamper.color("green")
 stamper.penup()
 
 # create snake list-representation
 
 food = turtle.Turtle()
-food.shape('circle')
+food.shape('triangle')
 food.shapesize(FOOD_SIZE / 20)
 food.color('red')
 food.penup()
