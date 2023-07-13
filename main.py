@@ -40,28 +40,33 @@ def go_right():
         snake_direction = 'right'
 
 
-def move_snake():
+def game_loop():
     stamper.clearstamps()
 
     new_head = snake[-1].copy()
     new_head[0] += offsets[snake_direction][0]
     new_head[1] += offsets[snake_direction][1]
 
-    # add new-head to snake body
-    snake.append(new_head)
+    # Check collisions
+    if new_head in snake or new_head[0] < - WIDTH / 2 or new_head[0] > WIDTH / 2 \
+            or new_head[1] < - HEIGHT / 2 or new_head[1] > HEIGHT / 2:
+        turtle.bye()
+    else:
+        # add new-head to snake body
+        snake.append(new_head)
 
-    # remove last-segment of snake
-    snake.pop(0)
+        # remove last-segment of snake
+        snake.pop(0)
 
-    for segment in snake:
-        stamper.goto(segment[0], segment[1])
-        stamper.stamp()
+        for segment in snake:
+            stamper.goto(segment[0], segment[1])
+            stamper.stamp()
 
-    # refresh screen
-    screen.update()
+        # refresh screen
+        screen.update()
 
-    # repeat-func
-    turtle.ontimer(move_snake, DELAY)
+        # repeat-func
+        turtle.ontimer(game_loop, DELAY)
 
 
 # Create a window to draw on
@@ -93,7 +98,7 @@ for segment in snake:
     stamper.stamp()
 
 # set animation in motion
-move_snake()
+game_loop()
 
 # Finish -
 turtle.done()
