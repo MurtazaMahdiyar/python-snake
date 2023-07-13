@@ -3,7 +3,7 @@ import random
 
 WIDTH = 500
 HEIGHT = 500
-DELAY = 200  # milli-seconds
+DELAY = 70  # milli-seconds
 FOOD_SIZE = 10
 
 offsets = {
@@ -12,6 +12,7 @@ offsets = {
     'left': (-20, 0),
     'right': (20, 0)
 }
+score = 0
 
 
 def go_up():
@@ -64,8 +65,8 @@ def game_loop():
         for segment in snake:
             stamper.goto(segment[0], segment[1])
             stamper.stamp()
-
         # refresh screen
+        screen.title(f"Snake Game. score {score}")
         screen.update()
 
         # repeat-func
@@ -73,11 +74,13 @@ def game_loop():
 
 
 def food_collision():
-    global food_pos
+    global food_pos, score
     if get_distance(snake[-1], food_pos) < 20:
+        score += 1  # add score after fed
         food_pos = get_random_food_pos()
         food.goto(food_pos)
         return True
+
     return False
 
 
